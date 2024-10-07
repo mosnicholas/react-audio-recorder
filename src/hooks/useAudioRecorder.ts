@@ -37,15 +37,19 @@ export type MediaAudioTrackConstraints = Pick<
  * @details `isPaused`: A boolean value that represents whether a recording in progress is paused
  * @details `recordingTime`: Number of seconds that the recording has gone on. This is updated every second
  * @details `mediaRecorder`: The current mediaRecorder in use
+ *
+ * @details `start`: The timeslice in seconds to record into each blob {@link https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder/start#timeslice}
  */
 const useAudioRecorder: (
   audioTrackConstraints?: MediaAudioTrackConstraints,
   onNotAllowedOrFound?: (exception: DOMException) => any,
-  mediaRecorderOptions?: MediaRecorderOptions
+  mediaRecorderOptions?: MediaRecorderOptions,
+  start?: number
 ) => recorderControls = (
   audioTrackConstraints,
   onNotAllowedOrFound,
-  mediaRecorderOptions
+  mediaRecorderOptions,
+  start
 ) => {
   const [isRecording, setIsRecording] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
@@ -81,7 +85,7 @@ const useAudioRecorder: (
           mediaRecorderOptions
         );
         setMediaRecorder(recorder);
-        recorder.start();
+        recorder.start(start);
         _startTimer();
 
         recorder.addEventListener("dataavailable", (event) => {
